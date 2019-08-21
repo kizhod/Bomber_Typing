@@ -23,7 +23,3 @@ eObjectType c_Monster::GetObjectType() const
 	return eObjectType::Monster;
 }
 
-void c_Monster::Render()
-{
-
-}

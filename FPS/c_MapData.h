@@ -7,6 +7,7 @@ public:
 	static c_MapData* Get(int a_nStage);
 	static void Init();
 	static void Release();
+	static eObjectType DataToObjectType(char c);
 
 private:
 	static c_MapData m_arrData[eGame::MaxStage];
@@ -14,7 +15,6 @@ private:
 private:
 
 	void MakeMapBuffer();
-	//void MakeMap();
 	void ReleaseData();
 
 public:

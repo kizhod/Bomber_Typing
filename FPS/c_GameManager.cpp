@@ -18,11 +18,7 @@ c_GameManager::c_GameManager(){}
 
 c_GameManager::~c_GameManager()
 {
-	for (auto* pObj : m_vcObj)
-	{
-		SAFE_DELETE(pObj);
-	}
-
+	ClearObject();
 	SAFE_DELETE(m_pPlayer);
 }
 
@@ -64,7 +60,7 @@ void c_GameManager::StageStart()
 		for (int x = 0; x < nWidth; ++x)
 		{
 			int nIndex = y * nWidth + x; // y* ³ÐÀÌ+ x??
-			eObjectType eType = (eObjectType)(sRef[nIndex] - '0');
+			eObjectType eType = c_MapData::DataToObjectType(sRef[nIndex]);
 
 			if (eType == eObjectType::None) { continue; }
 
@@ -82,7 +78,8 @@ void c_GameManager::StageStart()
 			}
 			else
 			{
-				m_vcObj.push_back(pObj); // ²¨³¾¶§´Â ¾î¶»°Ô?
+				int nLevel = (int)eType / (int)eObjectType::LevelGap;
+				m_vcObj[nLevel - 1].push_back(pObj); // ²¨³¾¶§´Â ¾î¶»°Ô?
 			}
 
 			pObj->SetMap(m_pMap); // set, pMap?
@@ -92,19 +89,27 @@ void c_GameManager::StageStart()
 
 void c_GameManager::ClearObject()
 {
-	for(auto obj: m_vcObj )
+	for(auto& vc: m_vcObj )
 	{ 
-		SAFE_DELETE(obj);
-	}
+		for (auto* pObj : vc)
+		{
+			SAFE_DELETE(pObj);
+		}
+		
+		vc.clear();
 
-	m_vcObj.clear();
+	}
 }
 
 void c_GameManager::Update(float a_fDeltaTime)
 {
-	for (auto obj : m_vcObj)
+	for (auto& vc : m_vcObj)
 	{
-		obj->Update(a_fDeltaTime);
+		for (auto* pObj : vc)
+		{
+			pObj->Update(a_fDeltaTime);
+		}
+
 	}
 
 	m_pPlayer->Update(a_fDeltaTime);
@@ -112,23 +117,31 @@ void c_GameManager::Update(float a_fDeltaTime)
 
 void c_GameManager::Render()
 {
-	for (auto obj : m_vcObj)
+	for (auto& vc : m_vcObj)
 	{
-		obj->Render();
+		for (auto* pObj : vc)
+		{
+			pObj->Render();
+		}
 	}
 
 	m_pPlayer->Render();
-
-	SetCursor(0, 0);
 	m_refMap->Render();
 }
 
 void c_GameManager::RemoveObject(class c_Object* a_pObj) // ??
 {
-	auto itor = std::find_if(std::begin(m_vcObj),
-		std::end(m_vcObj), [a_pObj](c_Object*p) {return p == a_pObj; });
-	assert(itor != m_vcObj.end());
-	m_vcObj.erase(itor);
+	eObjectType eType = a_pObj->GetObjectType();
+
+	int nLevelIndex = (int)eType / (int)eObjectType::LevelGap;
+	nLevelIndex -= 1;
+
+	auto& vc = m_vcObj[nLevelIndex];
+
+	auto itor = std::find_if(std::begin(vc),
+		std::end(vc), [a_pObj](c_Object*p) {return p == a_pObj; });
+	assert(itor != vc.end());
+	vc.erase(itor);
 }
 
 void c_GameManager::DropItem(c_Object* a_pObj)

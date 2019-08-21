@@ -22,8 +22,3 @@ eObjectType c_Wall::GetObjectType() const
 {
 	return eObjectType::Wall;
 }
-
-void Wall::Render()
-{
-
-}

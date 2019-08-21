@@ -99,9 +99,6 @@
     <ClInclude Include="MapData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="c_FPS.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="c_MapData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -227,9 +224,6 @@
     <ClCompile Include="MapData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="c_FPS.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="c_MapData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -289,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="c_Ani.cpp">
       <Filter>Project\Game\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="c_Bomberman.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

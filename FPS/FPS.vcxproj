@@ -162,7 +162,6 @@
     <ClInclude Include="c_Box.h" />
     <ClInclude Include="c_Define.h" />
     <ClInclude Include="c_Door.h" />
-    <ClInclude Include="c_FPS.h" />
     <ClInclude Include="c_GameManager.h" />
     <ClInclude Include="c_GameOverScene.h" />
     <ClInclude Include="c_GameScene.h" />
@@ -205,7 +204,7 @@
     <ClCompile Include="c_Box.cpp" />
     <ClCompile Include="c_Define.cpp" />
     <ClCompile Include="c_Door.cpp" />
-    <ClCompile Include="c_FPS.cpp" />
+    <ClCompile Include="c_Bomberman.cpp" />
     <ClCompile Include="c_GameManager.cpp" />
     <ClCompile Include="c_GameOverScene.cpp" />
     <ClCompile Include="c_GameScene.cpp" />

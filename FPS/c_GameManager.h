@@ -69,26 +69,32 @@ public:
 
 	void ClearObject();
 
+	// 상호작용
 	void RemoveObject(class c_Object* a_pObj);
 	void DropItem(class c_Object* a_pObj);
 	void GetBombData(class c_Bomb* a_refBomb) const;
 	void ObtainItem(eItem a_eItem);
 
 private:
-	
-	std::vector<class Object*> m_vcObj;
+	// 오브젝트
+	std::vector<class Object*> m_vcObj[(int)eObjectType::LevelMax];
 	class c_Player* m_pPlayer = nullptr;
 
+	// 스테이지 정보
 	int m_nNowStage = 0;
+	//남은시간
 	float m_fGameTime = 0;
 	class c_MapData* m_refMap = nullptr;
 	char** m_pMap = nullptr; // ??
 
+	//데이터
 	int m_nNowLife = 0;
 	int m_nScore = 0;
 
+	// 폭발
 	std::queue<class c_Bomb*> m_qBomb;
 
+	// 현재 플레이어 데이터
 	CharacterData m_stPlayerData;
 
 };

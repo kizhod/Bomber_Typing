@@ -48,9 +48,9 @@ private:
 private:
 	class c_Scene*	m_pNowScene = nullptr;
 
-	int m_arrKeys[(int)eKey::Max];
-	int m_BeforeKeyState[(int)eKey::Max];
-	eInputState m_KeyState[(int)eKey::Max];
+	int				m_arrKeys[(int)eKey::Max];
+	int				m_BeforeKeyState[(int)eKey::Max];
+	eInputState		m_KeyState[(int)eKey::Max];
 };
 
 #define InitSceneMng()		{c_SceneManager::CreateInstance(); c_SceneManager::GetInstance()->Init();}

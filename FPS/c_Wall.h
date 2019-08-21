@@ -7,10 +7,8 @@ public:
 	c_Wall(int x, int y);
 	virtual ~c_Wall();
 
+	// Object를 통해 상속됨
 	virtual eObjectType GetObjectType() const override;
-
-	virtual void Render() override;
-
 	RenderTile m_Data;
 };
 

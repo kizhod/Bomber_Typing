@@ -24,14 +24,14 @@ void c_Ani::SetState(int a_nAni, int a_nFrame)
 	m_pCurrentAni = &m_vcAni[a_nAni];
 
 	m_nAniType = a_nAni;
-	m_nFrame = a_nFrame;
+	m_nCut = a_nFrame;
 	m_nNowMaxFrame = m_pCurrentAni->size();
 }
 
 RenderTile* c_Ani::Get()
 {
-	RenderTile* r = (*m_pCurrentAni)[m_nFrame++];
-	m_nFrame %= m_nNowMaxFrame;
+	RenderTile* r = (*m_pCurrentAni)[m_nCut++];
+	m_nCut %= m_nNowMaxFrame;
 	return r;
 }
 

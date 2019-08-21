@@ -3,7 +3,18 @@
 
 #include "c_GameManager.h"
 
-c_Bomb::c_Bomb(int x, int y) : c_Object(x,y) {}
+c_Bomb::c_Bomb(int x, int y) : c_Object(x,y)
+, m_Data{
+		{ '1', '1', '1', '1', '1' },
+		{ '1', 'B', 'B', 'B', '1' },
+		{ '1', 'B', 'B', 'B', '1' },
+		{ '1', 'B', 'B', 'B', '1' },
+		{ '1', '1', '1', '1', '1' },
+}
+{
+	m_pNowAni = &m_Data;
+}
+
 c_Bomb::~c_Bomb(){}
 
 eObjectType c_Bomb::GetObjectType() const
@@ -16,7 +27,7 @@ void c_Bomb::Init()
 	GameMng()->GetBombData(this);
 }
 
-void c_Bomb::Update(float a_fDelta)
+void c_Bomb::_Update(float a_fDelta)
 {
 	m_fLifeTime -= a_fDelta;
 

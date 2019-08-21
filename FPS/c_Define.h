@@ -29,10 +29,10 @@ enum class eKey
 
 enum class eInputState : short // : short?
 {
-	None = 0b00,
-	Down = 0b11,
-	Press = 0b01,
-	Up = 0b10,
+	None	= 0b00,
+	Down	= 0b11,
+	Press	= 0b01,
+	Up		= 0b10,
 };
 
 enum class eScene
@@ -47,14 +47,22 @@ enum class eScene
 enum class eObjectType
 {
 	None = 0,
-	Wall,
+	LevelGap = 1000,
+
+	Level1 = LevelGap * 1,
+	Level2 = LevelGap * 2,
+	Level3 = LevelGap * 3,
+	LevelMax = 3,
+
+	Wall = Level1 + 1,
 	Box,
 	Door,
-	Item,
+
+	Item = Level2 + 1,
 	Bomb,
 
+	Player = Level3 +1,
 	Monster,
-	Player,
 };
 
 enum eItem
@@ -62,7 +70,7 @@ enum eItem
 	None = 1,
 
 	PowerUp,
-	Bombcount,
+	BombCount,
 	SpeedUp,
 
 	Max,

@@ -22,8 +22,3 @@ eObjectType c_Player::GetObjectType() const
 	return eObjectType::Player;
 }
 
-void c_Player::Render()
-{
-
-}
-

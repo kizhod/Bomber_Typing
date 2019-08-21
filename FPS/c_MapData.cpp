@@ -14,49 +14,51 @@ void c_MapData::Init()
 	m_arrData[0].x = 10;
 	m_arrData[0].y = 10;
 	m_arrData[0].mapOriginData =
-		"1111111111"
-		"1000000601"
-		"1020007001"
-		"1000000001"
-		"1000300001"
-		"1000000001"
-		"1000004001"
-		"1000000001"
-		"1050000001"
-		"1111111111";
+		"WWWWWWWWWW"
+		"W      B W"
+		"W B   B  W"
+		"W  B     W"
+		"W  B     W"
+		"W  B     W"
+		"W  B  M  W"
+		"W  B     W"
+		"W PIIIII W"
+		"WWWWWWWWWW";
 	m_arrData[0].MakeMapBuffer();
 
 	// 2스테이지
 	m_arrData[1].x = 10;
 	m_arrData[1].y = 10;
 	m_arrData[1].mapOriginData =
-		"1111111111"
-		"1000000601"
-		"1020007001"
-		"1000000001"
-		"1000300001"
-		"1000000001"
-		"1000004001"
-		"1000000001"
-		"1050000001"
-		"1111111111";
+		"WWWWWWWWWW"
+		"W  I   B W"
+		"W B   B  W"
+		"W  B     W"
+		"W  B     W"
+		"W  B     W"
+		"W  B  M  W"
+		"W  B     W"
+		"W P      W"
+		"WWWWWWWWWW";
 	m_arrData[1].MakeMapBuffer();
 
 	// 3스테이지
 	m_arrData[2].x = 10;
 	m_arrData[2].y = 10;
 	m_arrData[2].mapOriginData =
-		"1111111111"
-		"1000000601"
-		"1020007001"
-		"1000000001"
-		"1000300001"
-		"1000000001"
-		"1000004001"
-		"1000000001"
-		"1050000001"
-		"1111111111";
+		"WWWWWWWWWW"
+		"W      B W"
+		"W B   B  W"
+		"W  B     W"
+		"W  B  I  W"
+		"W  B     W"
+		"W  B  M  W"
+		"W  B     W"
+		"W P      W"
+		"WWWWWWWWWW";
 	m_arrData[2].MakeMapBuffer();
+
+	cout << "map ok" << endl;
 }
 
 void c_MapData::Release()
@@ -66,6 +68,27 @@ void c_MapData::Release()
 		mapData.ReleaseData();
 	}
 }
+
+eObjectType c_MapData::DataToObjectType(char c)
+{
+	eObjectType eReturn = eObjectType::None;
+
+	switch (c)
+	{
+	case ' ': {return eObjectType::None;} break;
+	case 'W': {eReturn = eObjectType::Wall;} break;
+	case 'B': {eReturn = eObjectType::Box;} break;
+	case 'D': {eReturn = eObjectType::Door;} break;
+	
+	case 'I': {eReturn = eObjectType::Item;} break;
+	case 'M': {eReturn = eObjectType::Monster;} break;
+	case 'P': {eReturn = eObjectType::Player;} break;
+	}
+
+	assert(eReturn != eObjectType::None);
+	return eReturn;
+}
+
 
 void c_MapData::MakeMapBuffer()
 {
@@ -77,31 +100,16 @@ void c_MapData::MakeMapBuffer()
 	for (int i = 0; i < nY; ++i)
 	{
 		pMap[i] = new char[nX + 1];
+
+		memset(pMap[i], ' ', sizeof(char)*(nX + 1));
 		pMap[i][nX] = 0;
 	}
 }
 
-/*
-void c_MapData::MakeMap() // 이해가 안되는 부분.
-{
-	pMap = new char*[y]; // char** pMap and char*[y] ??
-
-	for (int i = 0; i < y; ++i)
-	{
-		pMap[i] = new char[x + 1];
-
-		int gap = i * x;
-
-		memcpy_s(pMap[i], sizeof(char) * (x + 1),
-			mapOriginData + gap, sizeof(char)* x);
-
-		pMap[i][x] = 0;
-	}
-}
-*/
-
 void c_MapData::ReleaseData()
 {
+	int nY = y * TileSize;
+
 	for (int i = 0; i < y; ++i)
 	{
 		SAFE_DELETE_ARR(pMap[i])
@@ -112,6 +120,10 @@ void c_MapData::ReleaseData()
 
 void c_MapData::Render()
 {
+	SetCursor(0, 0);
+
+	int nY = y * TileSize;
+
 	for (int i = 0; i < y; ++i)
 	{
 		cout << pMap[i] << endl;

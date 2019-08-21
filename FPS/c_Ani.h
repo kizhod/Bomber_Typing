@@ -16,6 +16,6 @@ public:
 
 	int m_nAniType = 0;
 	int m_nNowMaxFrame = 0;
-	int m_nFrame = 0;
+	int m_nCut = 0;
 };
 
