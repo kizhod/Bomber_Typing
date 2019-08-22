@@ -1,8 +1,27 @@
 #include "pch.h"
 #include "c_Object.h"
 
+RenderTile c_Object::Empty = RenderTile{
+	{"     "},
+	{"     "},
+	{"     "},
+	{"     "},
+	{"     "},
+};
+
 c_Object::c_Object(int _x, int _y) : x(_x), y(_y) { }
-c_Object::~c_Object(){}
+{
+	rt.x = (float)(_x * TileSize);
+	rt.y = (float)(_x * TileSize);
+	rt.w = TileSize;
+	rt.h = TileSize;
+}
+
+c_Object::~c_Object()
+{
+	m_pNowAni = nullptr;
+	m_refMap = nullptr;
+}
 
 void c_Object::Init() { }
 
@@ -17,16 +36,37 @@ void c_Object::SetMap(char** a_refMap)
 	m_refMap = a_refMap;
 }
 
-void c_Object::Update(float a_fDelta)
+bool c_Object::Update(float a_fDelta)
 {
 	_PreUpdate(a_fDelta);
 	_Update(a_fDelta);
 }
 
+Rect c_Object::GetRenderRect() const
+{
+	return rt;
+}
+
+void c_Object::RenderClear()
+{
+	Rect rt = GetRenderRect();
+	int nX = (int)rt.x;
+	int nY = (int)rt.y;
+
+	for (int i = 0; i < TileSize; ++i)
+	{
+		char* pDest = m_refMap[nY + i];
+
+		memcpy_s((pDest + nX), TileSize * sizeof(char),
+			Empty[i], TileSize * sizeof(char));
+	}
+}
+
 void c_Object::Render()
 {
-	int nX = x * TileSize;
-	int nY = y * TileSize;
+	Rect rt = GetRenderRect();
+	int nX = (int)rt.x;
+	int nY = (int)rt.y;
 
 	for (int i = 0; i < TileSize; ++i)
 	{

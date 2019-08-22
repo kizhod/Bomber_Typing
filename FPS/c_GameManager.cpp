@@ -43,6 +43,7 @@ void c_GameManager::StageStart()
 {
 	++m_nNowStage;
 	m_fGameTime = RoundTime;
+	m_eState = eGameState::Run;
 
 	ClearObject();
 
@@ -71,25 +72,19 @@ void c_GameManager::StageStart()
 				continue;
 			}
 			
-			auto* pObj = c_ObjectFactory::Make(eType, x, y);
-			if (eType == eObjectType::Player)
-			{
-				m_pPlayer = static_cast<c_Player*>(pObj);
-			}
-			else
-			{
-				int nLevel = (int)eType / (int)eObjectType::LevelGap;
-				m_vcObj[nLevel - 1].push_back(pObj); // 꺼낼때는 어떻게?
-			}
-
-			pObj->SetMap(m_pMap); // set, pMap?
+			CreateObject(eType, x, y);
 		}
 	}
 }
 
+void c_GameManager::StageEnd()
+{
+	m_eState = eGameState::End;
+}
+
 void c_GameManager::ClearObject()
 {
-	for(auto& vc: m_vcObj )
+	for(auto& vc: m_arrObj )
 	{ 
 		for (auto* pObj : vc)
 		{
@@ -101,23 +96,75 @@ void c_GameManager::ClearObject()
 	}
 }
 
+void c_GameManager::CreateObject(eObjectType a_eObjType, int x, int y)
+{
+	auto* pObj = c_ObjectFactory::Make(a_eObjType, x, y);
+	if (a_eObjType == eObjectType::Player)
+	{
+		m_pPlayer = static_cast<c_Player*>(pObj);
+		m_pPlayer->SetStat(&m_stPlayerData);
+	}
+	else
+	{
+		int nDepthIndex = (int)a_eObjType / (int)eObjectType::RenderDepthGap;
+		nDepthIndex -= 1;
+		
+		m_arrObj[nDepthIndex].push_back(pObj); // 꺼낼때는 어떻게?
+	}
+
+	pObj->SetMap(m_pMap); // set, pMap?
+	
+}
+
 void c_GameManager::Update(float a_fDeltaTime)
 {
-	for (auto& vc : m_vcObj)
-	{
-		for (auto* pObj : vc)
-		{
-			pObj->Update(a_fDeltaTime);
-		}
+	int nSize = m_arrObj.size();
 
+	static std::vector<class c_Object*> vcDelete;
+	vcDelete.clear();
+
+	for (int i = 1; i < nSize; ++i)
+	{
+		auto& arrObj = m_arrObj[i];
+
+		for (auto& pObj : arrObj)
+		{
+			for (auto* pObj : arrObj)
+			{
+				c_Object* p = nullptr;
+
+				if (pObj->Update(a_fDeltaTime) == true)
+				{
+					p = pObj;
+				}
+
+				if (pObj->Interaction(m_pPlayer) == true)
+				{
+					p = pObj;
+				}
+
+				if (p != nullptr)
+				{
+					vcDelete.push_back(p);
+				}
+			}
+
+		}
 	}
+
+	for (auto* pDeleteObj : vcDelete)
+	{
+		pDeleteObj->RenderClear();
+		RemoveObject(pDeleteObj);
+	}
+	vcDelete.clear();
 
 	m_pPlayer->Update(a_fDeltaTime);
 }
 
 void c_GameManager::Render()
 {
-	for (auto& vc : m_vcObj)
+	for (auto& vc : m_arrObj)
 	{
 		for (auto* pObj : vc)
 		{
@@ -127,21 +174,39 @@ void c_GameManager::Render()
 
 	m_pPlayer->Render();
 	m_refMap->Render();
+
+	if (m_eState == eGameState::End)
+	{
+		StageStart();
+	}
+
+	cout << "pos : " << m_pPlayer->rt.x << " /// " << m_pPlayer->rt.y << endl;
+	COORD center = m_pPlayer->rt.Center();
+
+	cout << "center : " << center.X << " /// " << center.Y << endl;
+
+	if (m_sLog.size() > 0)
+	{
+		cout << m_sLog.c_str() << endl;
+		m_sLog.clear();
+	}
 }
 
 void c_GameManager::RemoveObject(class c_Object* a_pObj) // ??
 {
 	eObjectType eType = a_pObj->GetObjectType();
 
-	int nLevelIndex = (int)eType / (int)eObjectType::LevelGap;
+	int nLevelIndex = (int)eType / (int)eObjectType::RenderDepthGap;
 	nLevelIndex -= 1;
 
-	auto& vc = m_vcObj[nLevelIndex];
+	auto& vc = m_arrObj[nLevelIndex];
 
 	auto itor = std::find_if(std::begin(vc),
 		std::end(vc), [a_pObj](c_Object*p) {return p == a_pObj; });
 	assert(itor != vc.end());
 	vc.erase(itor);
+
+	SAFE_DELETE(a_pObj);
 }
 
 void c_GameManager::DropItem(c_Object* a_pObj)
@@ -164,6 +229,47 @@ void c_GameManager::ObtainItem(eItem a_eItem)
 		assert(false && "arg error");
 		break;
 	}
+}
+
+void c_GameManager::Die(class c_Object* a_refObj)
+{
+	cout << "Player Die" << endl;
+}
+
+bool c_GameManager::AddBomb(int a_nPlayerX, int a_nPlayerY)
+{
+	int nX = a_nPlayerX / TileSize;
+	int nY = a_nPlayerY / TileSize;
+	constexpr static int nIndex = ((int)eObjectType::Bomb / (int)eObjectType::RenderDepthGap) - 1;
+
+	bool bExsistBomb = false;
+
+	for (auto* pObj : m_arrObj[nIndex])
+	{
+		if (pObj->GetObjectType() == eObjectType::Bomb)
+		{
+			bExsistBomb = pObj->rt.IsIn(a_nPlayerX, a_nPlayerY);
+
+			if (bExsistBomb == true)
+			{
+				break;
+			}
+		}
+	}
+	
+	if (bExsistBomb == true)
+	{
+		return false;
+	}
+
+	CreateObject(eObjectType::Bomb, nX, nY);
+	return true;
+
+}
+
+void c_GameManager::ResistExplosion(int a_nBombX, int a_nBombY, int a_nPower)
+{
+	m_pPlayer->m_nPutBombCount -= 1;
 }
 
 #include "c_Bomb.h"

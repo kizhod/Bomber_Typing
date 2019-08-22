@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "c_Ani.h"
 
-c_Ani::c_Ani()
+void c_Ani::Resize(int a_nAniTypeCount)
 {
+	m_vcAni.resize(a_nAniTypeCount)
 }
 
 c_Ani::~c_Ani()
 {
+	
 }
 
 void c_Ani::Resize(int a_nAniTypeCount)

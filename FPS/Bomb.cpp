@@ -3,7 +3,11 @@
 
 #include "GameManager.h"
 
-Bomb::Bomb(int x, int y) : Object(x, y) { }
+
+Bomb::Bomb(int x, int y) : Object(x, y)
+{
+}
+
 Bomb::~Bomb() { }
 
 eObjectType Bomb::GetObjectType() const

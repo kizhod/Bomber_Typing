@@ -11,7 +11,10 @@ public:
 	virtual eObjectType GetObjectType() const override;
 	virtual void Interaction(class c_Hero* a_refHero) override;
 
+	virtual void _PreUpdate(float a_fDelta) override;
+	virtual void _Update(float a_fDelta) override;
+
 	eItem m_eType = eItem::None;
-	RenderTile m_Item[(int)eItem::Max];
+	class c_Ani* m_pAni = nullptr;
 };
 
