@@ -159,6 +159,9 @@
     <ClInclude Include="c_Ani.h">
       <Filter>Project\Game\Object</Filter>
     </ClInclude>
+    <ClInclude Include="c_Explosion.h">
+      <Filter>Project\Game\Object\Sub</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -286,6 +289,9 @@
     </ClCompile>
     <ClCompile Include="c_Bomberman.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="c_Explosion.cpp">
+      <Filter>Project\Game\Object\Sub</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

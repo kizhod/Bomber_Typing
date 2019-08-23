@@ -2,20 +2,83 @@
 #include "c_Bomb.h"
 
 #include "c_GameManager.h"
+#include "c_Ani.h"
 
-c_Bomb::c_Bomb(int x, int y) : c_Object(x,y)
-, m_Data{
-		{ '1', '1', '1', '1', '1' },
-		{ '1', 'B', 'B', 'B', '1' },
-		{ '1', 'B', 'B', 'B', '1' },
-		{ '1', 'B', 'B', 'B', '1' },
-		{ '1', '1', '1', '1', '1' },
-}
+c_Bomb::c_Bomb(int x, int y) : c_Object(x, y), m_pAni(new c_Ani())
 {
-	m_pNowAni = &m_Data;
+	m_pAni->Resize(1);
+	m_pAni->Add(0,
+		{
+		   {{"XXXXX"},
+			{"XXXXX"},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{"xxxxx"},
+			{"xxxxx"},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{"XXXXX"},
+			{"XXXXX"},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{"xxxxx"},
+			{"xxxxx"},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{" XXX "},
+			{" XXX "},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{" xxx "},
+			{" xxx "},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{"  X  "},
+			{"  X  "},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{"  x  "},
+			{"  x  "},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{"     "},
+			{"  x  "},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+
+		   {{"     "},
+			{"     "},
+			{"|   |"},
+			{"| B |"},
+			{"#####"}},
+		}
+	);
+
+	m_pAni->SetState(0);
+	m_pNowAni = m_pAni->Get();
 }
 
-c_Bomb::~c_Bomb(){}
+c_Bomb::~c_Bomb()
+{
+	SAFE_DELETE(m_pAni);
+}
 
 eObjectType c_Bomb::GetObjectType() const
 {
@@ -24,22 +87,36 @@ eObjectType c_Bomb::GetObjectType() const
 
 void c_Bomb::Init()
 {
-	GameMng()->GetBombData(this);
+	GameMng()->GetBombData(OUT this);
 }
 
-void c_Bomb::_Update(float a_fDelta)
+bool c_Bomb::_Update(float a_fDelta)
 {
-	m_fLifeTime -= a_fDelta;
+	m_pAni->Update(a_fDelta);
+	m_pNowAni = m_pAni->Get();
 
+	m_fLifeTime -= a_fDelta;
 	if (m_fLifeTime <= 0.0f)
 	{
-		// Bomb!
+		COORD c = rt.Center();
+		GameMng()->ResistExplosion(this, rt.x, rt.y, m_nExplosiveRange);
+
+		std::string s = "Explosion Pos : ";
+		s += std::to_string(c.X);
+		s += " //// ";
+		s += std::to_string(c.Y);
+		s += "\n";
+		GameMng()->m_sLog += s;
+
+		return true;
 	}
+
+	return false;
 }
 
-void c_Bomb :: Explosived(c_Bomb* a_refBomb)
+bool c_Bomb :: Explosived()
 {
-	if (a_refBomb == this) { return; }
+	GameMng()->ResistExplosion(this, rt.x, rt.y, m_nExplosiveRange);
 
-	// Bomb!
+	return true;
 }

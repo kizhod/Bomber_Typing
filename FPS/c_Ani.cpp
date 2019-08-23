@@ -1,14 +1,8 @@
 #include "pch.h"
 #include "c_Ani.h"
 
-void c_Ani::Resize(int a_nAniTypeCount)
-{
-	m_vcAni.resize(a_nAniTypeCount)
-}
-
 c_Ani::~c_Ani()
-{
-	
+{	
 }
 
 void c_Ani::Resize(int a_nAniTypeCount)
@@ -16,24 +10,50 @@ void c_Ani::Resize(int a_nAniTypeCount)
 	m_vcAni.resize(a_nAniTypeCount);
 }
 
-void c_Ani::Add(int a_nAni, RenderTile* tile)
+void c_Ani::Add(int a_nAni, const RenderTile& tile)
 {
+	assert(a_nAni < m_vcAni.size() && "logic error - Call Resize");
 	m_vcAni[a_nAni].push_back(tile);
 }
 
-void c_Ani::SetState(int a_nAni, int a_nFrame)
+void c_Ani::Add(int a_nAniType, const std::initializer_list<RenderTile>& tiles)
+{
+	for (auto& tile : tiles)
+	{
+		Add(a_nAniType, tile);
+	}
+}
+
+void c_Ani::SetState(int a_nAni, int a_nCut)
 {
 	m_pCurrentAni = &m_vcAni[a_nAni];
 
 	m_nAniType = a_nAni;
-	m_nCut = a_nFrame;
-	m_nNowMaxFrame = m_pCurrentAni->size();
+	m_nCut = a_nCut;
+	m_nNowMaxCut = (int)m_pCurrentAni->size();
+	m_fNowTile = 0.0f;
+}
+
+void c_Ani::NextCut()
+{
+	++m_nCut;
+	m_nCut %= m_nNowMaxCut;
+}
+
+void c_Ani::Update(float a_fDeltaTime)
+{
+	m_fNowTile += a_fDeltaTime;
+
+	if (m_fNowTile > a_fCutTime)
+	{
+		NextCut();
+		m_fNowTile = 0;
+	}
 }
 
 RenderTile* c_Ani::Get()
 {
-	RenderTile* r = (*m_pCurrentAni)[m_nCut++];
-	m_nCut %= m_nNowMaxFrame;
+	RenderTile* r = &(*m_pCurrentAni)[m_nCut++];
 	return r;
 }
 

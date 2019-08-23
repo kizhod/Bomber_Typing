@@ -7,6 +7,7 @@
 #include "c_Item.h"
 #include "c_Bomb.h"
 #include "c_Monster.h"
+#include "c_Explosion.h"
 #include "c_Player.h"
 
 c_Object* c_ObjectFactory::Make(eObjectType a_eType, int x, int y)
@@ -21,6 +22,7 @@ c_Object* c_ObjectFactory::Make(eObjectType a_eType, int x, int y)
 		case eObjectType::Bomb:		{pReturn = new c_Bomb(x, y);} break;
 		case eObjectType::Monster:	{pReturn = new c_Monster(x, y);} break;
 		case eObjectType::Player:	{pReturn = new c_Player(x, y);} break;
+		case eObjectType::Explosion:{pReturn = new c_Explosion(x, y);} break;
 	}
 
 	assert(pReturn != nullptr);

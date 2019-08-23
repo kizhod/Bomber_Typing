@@ -27,6 +27,14 @@ enum class eKey
 	Max,
 };
 
+enum class eDir
+{
+	Left,
+	Top,
+	Right,
+	Bottom,
+};
+
 enum class eInputState : short // : short?
 {
 	None	= 0b00,
@@ -55,25 +63,26 @@ enum class eObjectType
 	RenderDepthCount= 3,
 
 	Wall = RenderDepthGap1 + 1,
-	Box,
+
+	Box = RenderDepthGap2 + 1,
 	Door,
-
-	Item = RenderDepthGap2 + 1,
-	Bomb,
-
+	Item,
+	
 	Player = RenderDepthGap3 +1,
 	Monster,
+	Explosion,
+	Bomb,
 };
 
 enum eItem
 {
-	None = 1,
+	None = -1,
 
-PowerUp,
-BombCount,
-SpeedUp,
-
-Max,
+	PowerUp,
+	BombCount,
+	SpeedUp,
+	
+	Max,
 };
 
 
@@ -154,22 +163,22 @@ struct RenderTile
 	RenderLine l[TileSize];
 };
 
-
+// 충돌처리용
 struct Rect
 {
 	float x;
 	float y;
-	float w;
-	float h;
+	float w; // width;
+	float h; // height;
 
-	bool IsCross(const Rect& rt)
+	bool IsCross(const Rect& rt) const
 	{
-		if ((x >= rt.x + rt.w)) ||
+		if ((x >= rt.x + rt.w) ||
 			(x + w <= rt.x) ||
-			(y >= rt.y + h) ||
+			(y >= rt.y + rt.h) ||
 			(y + h <= rt.y))
 		{
-		return false;
+			return false;
 		}
 
 		return true;

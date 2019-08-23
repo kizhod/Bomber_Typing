@@ -19,8 +19,9 @@ eObjectType c_Box::GetObjectType() const
 	return eObjectType::Box;
 }
 
-void c_Box::Explosived(c_Bomb* a_refBomb)
+bool c_Box::Explosived()
 {
-	GameMng()->RemoveObject(this);
 	GameMng()->DropItem(this);
+
+	return true;
 }

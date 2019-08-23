@@ -15,9 +15,10 @@ public:
 
 	// Object를 통해 상속됨
 	virtual eObjectType GetObjectType() const override;
+	virtual bool CanMove() const override;
 
 	virtual void Init() override;
-	virtual void Interaction(class c_Hero* a_refHero) override;
+	virtual bool Interaction(class c_Player* a_refHero) override;
 
 	eDoorState m_eState = eDoorState::Close;
 

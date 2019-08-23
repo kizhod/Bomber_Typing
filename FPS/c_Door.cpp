@@ -2,6 +2,7 @@
 #include "c_Door.h"
 
 #include "c_GameManager.h"
+#include "c_Player.h"
 
 c_Door::c_Door(int x, int y) : c_Object(x, y)
 , m_Close{
@@ -30,13 +31,24 @@ eObjectType c_Door::GetObjectType() const
 	return eObjectType::Door;
 }
 
+bool c_Door::CanMove() const
+{
+	return (m_eState == eDoorState::Open);
+}
+
 void c_Door::Init()
 {
 	m_eState = eDoorState::Close;
 }
 
-void c_Door::Interaction(class c_Hero* a_refHero)
+bool c_Door::Interaction(class c_Player* a_refHero)
 {
 	if (m_eState == eDoorState::Close) { return; }
-	GameMng()->StageStart();
+
+	if (IsCross(a_refHero) == true)
+	{
+		GameMng()->StageStart();
+	}
+
+	return false;
 }

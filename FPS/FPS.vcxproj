@@ -179,6 +179,7 @@
     <ClInclude Include="c_Wall.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="Door.h" />
+    <ClInclude Include="c_Explosion.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="GameScene.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="c_Wall.cpp" />
     <ClCompile Include="Define.cpp" />
     <ClCompile Include="Door.cpp" />
+    <ClCompile Include="c_Explosion.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameOverScene.cpp" />

@@ -5,6 +5,8 @@
 
 #include "c_SceneFactory.h"
 
+eInputState c_SceneManager::m_KeyState[(int)eKey::Max] = {};
+
 c_SceneManager::c_SceneManager()
 {
 	int nIndex = 0;
@@ -58,6 +60,11 @@ void c_SceneManager::Update(float a_fDeltaTime)
 void c_SceneManager::Render()
 {
 	m_pNowScene->Render();
+}
+
+void c_SceneManager::PostRender()
+{
+	m_pNowScene->PostRender();
 }
 
 void c_SceneManager::KeyCheck() // 비트연산??

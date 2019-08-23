@@ -9,7 +9,7 @@ RenderTile c_Object::Empty = RenderTile{
 	{"     "},
 };
 
-c_Object::c_Object(int _x, int _y) : x(_x), y(_y) { }
+c_Object::c_Object(int _x, int _y) : x(_x), y(_y)
 {
 	rt.x = (float)(_x * TileSize);
 	rt.y = (float)(_x * TileSize);
@@ -25,10 +25,11 @@ c_Object::~c_Object()
 
 void c_Object::Init() { }
 
-void c_Object::Explosived(class c_Bomb* a_refBomb) { }
-void c_Object::Interaction(class c_Hero* a_refHero) { }
+bool c_Object::CanMove() const { return false; }
+bool c_Object::Explosived() { return false; }
+bool c_Object::Interaction(class c_Player* a_refHero) { return false; }
 void c_Object::_PreUpdate(float a_fDelta){}
-void c_Object::_Update(float a_fDelta){}
+bool c_Object::_Update(float a_fDelta) { return false; }
 
 void c_Object::SetMap(char** a_refMap)
 {
@@ -39,7 +40,7 @@ void c_Object::SetMap(char** a_refMap)
 bool c_Object::Update(float a_fDelta)
 {
 	_PreUpdate(a_fDelta);
-	_Update(a_fDelta);
+	return _Update(a_fDelta);
 }
 
 Rect c_Object::GetRenderRect() const

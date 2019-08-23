@@ -45,6 +45,8 @@ void c_Application::Run()
 			if (Update(fDeltaTime) == eUpdateState::Final) { break; }
 
 			Render();
+
+			PostRender();
 		}
 	}
 }
@@ -64,4 +66,9 @@ eUpdateState c_Application::Update(float a_fDelta)
 void c_Application::Render()
 {
 	SceneMng()->Render();
+}
+
+void c_Application::PostRender()
+{
+	SceneMng()->PostRender();
 }

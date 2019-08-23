@@ -17,3 +17,4 @@ c_Scene::~c_Scene()
 void c_Scene::Init() {}
 void c_Scene::Update(float a_fDeltaTime){}
 void c_Scene::Render() {}
+void c_Scene::PostRender() {}
